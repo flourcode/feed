@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Midcentury Modern Home Finder - Census Data + Maps</title>
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+    <title>RSS Feed Reader</title>
     <style>
         * {
             margin: 0;
@@ -16,237 +12,113 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         header {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
         }
 
         h1 {
-            color: #333;
-            font-size: 2.5em;
+            font-size: 3em;
             margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .tagline {
-            color: #666;
+        .subtitle {
             font-size: 1.2em;
-            margin-bottom: 20px;
+            opacity: 0.9;
         }
 
-        .badges {
+        .feed-controls {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .input-group {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-
-        .badge-census {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .badge-map {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-
-        .badge-live {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            color: white;
-        }
-
-        .search-section {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
             margin-bottom: 20px;
         }
 
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        select, input {
-            padding: 10px;
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
-        select:focus, input:focus {
+        input[type="text"]:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .search-btn {
+        button {
+            padding: 15px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 10px;
+            font-size: 16px;
             font-weight: 600;
-            transition: transform 0.2s;
-            width: 100%;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .search-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        #map {
-            height: 500px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 25px;
-        }
-
-        .neighborhood-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
-        .neighborhood-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
+        button:active {
+            transform: translateY(0);
         }
 
-        .card-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .card-subtitle {
-            opacity: 0.9;
-            font-size: 1em;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .stat-row {
+        .preset-feeds {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .stat-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .stat-label {
-            color: #666;
-            font-weight: 500;
-        }
-
-        .stat-value {
-            font-weight: 700;
+        .preset-btn {
+            padding: 10px 20px;
+            background: #f5f5f5;
             color: #333;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .percentage-bar {
-            background: #f0f0f0;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
+        .preset-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
         }
 
-        .percentage-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.5s ease;
-        }
-
-        .stats-summary {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .summary-stat {
-            text-align: center;
-        }
-
-        .summary-number {
-            font-size: 2.5em;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .summary-label {
-            color: #666;
-            margin-top: 5px;
+        .search-box {
+            margin-top: 20px;
         }
 
         .loading {
@@ -254,64 +126,189 @@
             padding: 40px;
             color: white;
             font-size: 1.2em;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .feed-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: slideUp 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feed-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .feed-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .feed-item h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            line-height: 1.4;
+        }
+
+        .feed-item .date {
+            color: #999;
+            font-size: 0.9em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feed-item .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .feed-item .source {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
         }
 
         .error {
-            background: #fee;
-            border: 2px solid #fcc;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            color: #c33;
-        }
-
-        .api-key-section {
-            background: #fffbea;
-            border: 2px solid #f7c948;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .api-key-section h3 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .api-key-section input {
-            width: 100%;
-            max-width: 500px;
-            margin-top: 10px;
-        }
-
-        .info-box {
-            background: #e7f3ff;
-            border-left: 4px solid #2196F3;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        .premium-badge-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
             text-align: center;
+            color: #e74c3c;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: shake 0.5s ease;
+        }
+
+        .error-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .empty-state h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-10px);
+            }
+            75% {
+                transform: translateX(10px);
+            }
         }
 
         @media (max-width: 768px) {
             h1 {
-                font-size: 1.8em;
+                font-size: 2em;
             }
-            
-            .results-grid {
+
+            .feed-grid {
                 grid-template-columns: 1fr;
             }
 
-            #map {
-                height: 300px;
+            .input-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
             }
         }
     </style>
@@ -319,391 +316,214 @@
 <body>
     <div class="container">
         <header>
-            <h1>🏠 Midcentury Modern Home Finder</h1>
-            <p class="tagline">Discover neighborhoods with authentic 1950s architecture using US Census data</p>
-            <div class="badges">
-                <span class="badge badge-census">Live Census Data</span>
-                <span class="badge badge-map">Interactive Maps</span>
-                <span class="badge badge-live">Real-Time Updates</span>
-            </div>
+            <h1>📰 RSS Feed Reader</h1>
+            <p class="subtitle">Stay updated with your favorite sources</p>
         </header>
 
-        <div class="api-key-section">
-            <h3>📋 Setup Required</h3>
-            <p>To use real Census data, you need a free API key. Get yours at: <a href="https://api.census.gov/data/key_signup.html" target="_blank">https://api.census.gov/data/key_signup.html</a></p>
-            <input type="text" id="census-api-key" placeholder="Enter your Census API key here (optional - demo data works without it)">
-        </div>
-
-        <div class="info-box">
-            <strong>📍 How it works:</strong> This app uses the Census Bureau's American Community Survey (ACS) table B25034 to find neighborhoods where a high percentage of homes were built between 1950-1959 (the peak of midcentury modern architecture). The map shows these neighborhoods, and you can click on markers to see details.
-        </div>
-
-        <div class="search-section">
-            <div class="filter-grid">
-                <div class="filter-group">
-                    <label for="state-select">State</label>
-                    <select id="state-select">
-                        <option value="06">California</option>
-                        <option value="04">Arizona</option>
-                        <option value="32">Nevada</option>
-                        <option value="08">Colorado</option>
-                        <option value="48">Texas</option>
-                        <option value="12">Florida</option>
-                        <option value="41">Oregon</option>
-                        <option value="53">Washington</option>
-                        <option value="13">Georgia</option>
-                        <option value="35">New Mexico</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="min-percentage">Min % 1950s Homes</label>
-                    <input type="number" id="min-percentage" value="20" min="0" max="100">
-                </div>
-
-                <div class="filter-group">
-                    <label for="sort-by">Sort By</label>
-                    <select id="sort-by">
-                        <option value="percentage">% of 1950s Homes</option>
-                        <option value="total">Total 1950s Homes</option>
-                        <option value="name">County Name</option>
-                    </select>
-                </div>
+        <div class="feed-controls">
+            <div class="input-group">
+                <input type="text" id="feedUrl" placeholder="Enter RSS feed URL (e.g., https://example.com/feed.xml)" />
+                <button onclick="loadFeed()">Load Feed</button>
             </div>
 
-            <button class="search-btn" id="search-btn" onclick="searchNeighborhoods()">
-                🔍 Search Census Data
-            </button>
-        </div>
-
-        <div id="error" class="error" style="display: none;"></div>
-        <div id="loading" class="loading" style="display: none;">
-            Fetching Census data...
-        </div>
-
-        <div id="stats-summary" class="stats-summary" style="display: none;">
-            <div class="summary-stat">
-                <div class="summary-number" id="total-neighborhoods">0</div>
-                <div class="summary-label">Counties Found</div>
+            <div class="preset-feeds">
+                <button class="preset-btn" onclick="loadPresetFeed('https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml')">📰 NY Times</button>
+                <button class="preset-btn" onclick="loadPresetFeed('https://feeds.bbci.co.uk/news/rss.xml')">🌍 BBC News</button>
+                <button class="preset-btn" onclick="loadPresetFeed('https://www.theguardian.com/world/rss')">📖 The Guardian</button>
+                <button class="preset-btn" onclick="loadPresetFeed('https://www.reddit.com/r/technology/.rss')">💻 Tech Reddit</button>
+                <button class="preset-btn" onclick="loadPresetFeed('https://hnrss.org/frontpage')">🔶 Hacker News</button>
             </div>
-            <div class="summary-stat">
-                <div class="summary-number" id="total-homes">0</div>
-                <div class="summary-label">Total 1950s Homes</div>
-            </div>
-            <div class="summary-stat">
-                <div class="summary-number" id="avg-percentage">0%</div>
-                <div class="summary-label">Average MCM %</div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search articles..." oninput="filterArticles()" />
             </div>
         </div>
 
-        <div id="map"></div>
-
-        <div id="results" class="results-grid"></div>
+        <div id="feedContent"></div>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <script>
-        // Initialize markers array first
-        let markers = [];
-        
-        // Initialize map
-        let map = L.map('map').setView([37.0902, -95.7129], 4); // Center of US
-        
-        // Add OpenStreetMap tiles (free!)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18
-        }).addTo(map);
+        let allArticles = [];
 
-        // Census B25034 variable codes for "Year Structure Built"
-        // B25034_006E = Built 1950 to 1959
-        // B25034_001E = Total housing units
-        const CENSUS_VARIABLES = 'NAME,B25034_006E,B25034_001E';
-        
-        // State FIPS codes
-        const STATE_NAMES = {
-            '01': 'Alabama', '02': 'Alaska', '04': 'Arizona', '05': 'Arkansas',
-            '06': 'California', '08': 'Colorado', '09': 'Connecticut', '10': 'Delaware',
-            '12': 'Florida', '13': 'Georgia', '15': 'Hawaii', '16': 'Idaho',
-            '17': 'Illinois', '18': 'Indiana', '19': 'Iowa', '20': 'Kansas',
-            '21': 'Kentucky', '22': 'Louisiana', '23': 'Maine', '24': 'Maryland',
-            '25': 'Massachusetts', '26': 'Michigan', '27': 'Minnesota', '28': 'Mississippi',
-            '29': 'Missouri', '30': 'Montana', '31': 'Nebraska', '32': 'Nevada',
-            '33': 'New Hampshire', '34': 'New Jersey', '35': 'New Mexico', '36': 'New York',
-            '37': 'North Carolina', '38': 'North Dakota', '39': 'Ohio', '40': 'Oklahoma',
-            '41': 'Oregon', '42': 'Pennsylvania', '44': 'Rhode Island', '45': 'South Carolina',
-            '46': 'South Dakota', '47': 'Tennessee', '48': 'Texas', '49': 'Utah',
-            '50': 'Vermont', '51': 'Virginia', '53': 'Washington', '54': 'West Virginia',
-            '55': 'Wisconsin', '56': 'Wyoming'
-        };
+        async function loadFeed() {
+            const feedUrl = document.getElementById('feedUrl').value.trim();
+            if (!feedUrl) {
+                showError('Please enter a valid RSS feed URL');
+                return;
+            }
+            await fetchAndDisplayFeed(feedUrl);
+        }
 
-        // Approximate county coordinates (major MCM hotspots)
-        const COUNTY_COORDS = {
-            'San Diego County': [32.7157, -117.1611],
-            'Los Angeles County': [34.0522, -118.2437],
-            'Orange County': [33.7175, -117.8311],
-            'Riverside County': [33.7537, -116.0059],
-            'Maricopa County': [33.4484, -112.0740],
-            'Clark County': [36.1699, -115.1398],
-            'Denver County': [39.7392, -104.9903],
-            'Washoe County': [39.5296, -119.8138],
-            'Multnomah County': [45.5152, -122.6784],
-            'King County': [47.6062, -122.3321],
-            'Travis County': [30.2672, -97.7431],
-            'Harris County': [29.7604, -95.3698],
-            'Dallas County': [32.7767, -96.7970],
-            'Tarrant County': [32.7555, -97.3308],
-            'Fulton County': [33.7490, -84.3880],
-            'Bernalillo County': [35.0844, -106.6504],
-            'Miami-Dade County': [25.7617, -80.1918],
-            'Broward County': [26.1224, -80.1373],
-            'Palm Beach County': [26.7153, -80.0534]
-        };
+        async function loadPresetFeed(url) {
+            document.getElementById('feedUrl').value = url;
+            await fetchAndDisplayFeed(url);
+        }
 
-        async function searchNeighborhoods() {
-            const apiKey = document.getElementById('census-api-key').value.trim();
-            const stateFips = document.getElementById('state-select').value;
-            const minPercentage = parseFloat(document.getElementById('min-percentage').value) || 0;
-            const sortBy = document.getElementById('sort-by').value;
-
-            // Clear previous results
-            clearMap();
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('stats-summary').style.display = 'none';
-
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('search-btn').disabled = true;
+        async function fetchAndDisplayFeed(feedUrl) {
+            const feedContent = document.getElementById('feedContent');
+            feedContent.innerHTML = '<div class="loading">⏳ Loading feed...</div>';
 
             try {
-                let data;
+                // Using a CORS proxy to fetch RSS feeds
+                const proxyUrl = 'https://api.allorigins.win/get?url=';
+                const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
                 
-                if (apiKey) {
-                    // Use real Census API
-                    const apiUrl = `https://api.census.gov/data/2022/acs/acs5?get=${CENSUS_VARIABLES}&for=county:*&in=state:${stateFips}&key=${apiKey}`;
-                    const response = await fetch(apiUrl);
-                    
-                    if (!response.ok) {
-                        throw new Error(`Census API error: ${response.status}`);
-                    }
-                    
-                    const rawData = await response.json();
-                    data = processCensusData(rawData, stateFips);
-                } else {
-                    // Use demo data
-                    data = getDemoData(stateFips);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch feed');
                 }
 
-                // Filter and sort
-                data = data.filter(county => {
-                    const percentage = (county.mcmHomes / county.totalHomes) * 100;
-                    return percentage >= minPercentage;
+                const data = await response.json();
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(data.contents, 'text/xml');
+
+                // Check for parsing errors
+                const parseError = xml.querySelector('parsererror');
+                if (parseError) {
+                    throw new Error('Invalid RSS feed format');
+                }
+
+                // Parse RSS or Atom feed
+                const items = xml.querySelectorAll('item, entry');
+                
+                if (items.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+
+                allArticles = Array.from(items).map(item => {
+                    // Handle both RSS and Atom formats
+                    const title = item.querySelector('title')?.textContent || 'Untitled';
+                    const link = item.querySelector('link')?.textContent || 
+                                item.querySelector('link')?.getAttribute('href') || '#';
+                    const description = item.querySelector('description')?.textContent || 
+                                      item.querySelector('summary')?.textContent || 
+                                      item.querySelector('content')?.textContent || 
+                                      'No description available';
+                    const pubDate = item.querySelector('pubDate')?.textContent || 
+                                   item.querySelector('published')?.textContent || 
+                                   item.querySelector('updated')?.textContent || '';
+                    
+                    // Get source name from channel or feed title
+                    const channelTitle = xml.querySelector('channel > title, feed > title')?.textContent || 'Unknown Source';
+
+                    return {
+                        title,
+                        link,
+                        description: stripHtml(description).substring(0, 250),
+                        pubDate: formatDate(pubDate),
+                        source: channelTitle
+                    };
                 });
 
-                data.sort((a, b) => {
-                    if (sortBy === 'percentage') {
-                        return (b.mcmHomes / b.totalHomes) - (a.mcmHomes / a.totalHomes);
-                    } else if (sortBy === 'total') {
-                        return b.mcmHomes - a.mcmHomes;
-                    } else {
-                        return a.name.localeCompare(b.name);
-                    }
-                });
-
-                // Update statistics
-                updateStatistics(data);
-
-                // Display results
-                displayResults(data);
-
-                // Add markers to map
-                addMarkersToMap(data);
+                displayArticles(allArticles);
 
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('error').textContent = `Error: ${error.message}. ${!apiKey ? 'Using demo data instead.' : 'Please check your API key.'}`;
-                document.getElementById('error').style.display = 'block';
-                
-                // Fall back to demo data
-                const data = getDemoData(document.getElementById('state-select').value);
-                displayResults(data);
-                addMarkersToMap(data);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('search-btn').disabled = false;
+                showError('Failed to load RSS feed. Please check the URL and try again. Some feeds may be blocked by CORS policies.');
             }
         }
 
-        function processCensusData(rawData, stateFips) {
-            // First row is headers
-            const headers = rawData[0];
-            const rows = rawData.slice(1);
+        function displayArticles(articles) {
+            const feedContent = document.getElementById('feedContent');
             
-            return rows.map(row => {
-                const mcmHomes = parseInt(row[1]) || 0;
-                const totalHomes = parseInt(row[2]) || 0;
-                const countyFips = row[4];
-                const countyName = row[0];
-                
-                return {
-                    name: countyName,
-                    state: STATE_NAMES[stateFips],
-                    mcmHomes: mcmHomes,
-                    totalHomes: totalHomes,
-                    fips: stateFips + countyFips
-                };
-            });
-        }
-
-        function getDemoData(stateFips) {
-            const stateName = STATE_NAMES[stateFips];
-            
-            // Demo data based on actual patterns (California shown as example)
-            const demoData = {
-                '06': [ // California
-                    { name: 'Los Angeles County', mcmHomes: 245000, totalHomes: 890000 },
-                    { name: 'San Diego County', mcmHomes: 98000, totalHomes: 425000 },
-                    { name: 'Orange County', mcmHomes: 125000, totalHomes: 380000 },
-                    { name: 'Riverside County', mcmHomes: 67000, totalHomes: 312000 },
-                    { name: 'San Bernardino County', mcmHomes: 54000, totalHomes: 289000 }
-                ],
-                '04': [ // Arizona
-                    { name: 'Maricopa County', mcmHomes: 156000, totalHomes: 520000 },
-                    { name: 'Pima County', mcmHomes: 45000, totalHomes: 178000 }
-                ],
-                '32': [ // Nevada
-                    { name: 'Clark County', mcmHomes: 89000, totalHomes: 295000 },
-                    { name: 'Washoe County', mcmHomes: 23000, totalHomes: 98000 }
-                ]
-            };
-
-            const counties = demoData[stateFips] || [];
-            return counties.map(county => ({
-                ...county,
-                state: stateName,
-                fips: stateFips + '000'
-            }));
-        }
-
-        function updateStatistics(data) {
-            const totalHomes = data.reduce((sum, county) => sum + county.mcmHomes, 0);
-            const avgPercentage = data.length > 0 
-                ? (data.reduce((sum, county) => sum + (county.mcmHomes / county.totalHomes * 100), 0) / data.length).toFixed(1)
-                : 0;
-
-            document.getElementById('total-neighborhoods').textContent = data.length;
-            document.getElementById('total-homes').textContent = totalHomes.toLocaleString();
-            document.getElementById('avg-percentage').textContent = avgPercentage + '%';
-            document.getElementById('stats-summary').style.display = data.length > 0 ? 'grid' : 'none';
-        }
-
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            
-            if (data.length === 0) {
-                resultsDiv.innerHTML = '<div style="background: white; padding: 60px; border-radius: 15px; text-align: center; color: #666;">No counties found matching your criteria. Try adjusting the filters.</div>';
+            if (articles.length === 0) {
+                feedContent.innerHTML = '<div class="error"><div class="error-icon">🔍</div><h3>No articles found matching your search</h3></div>';
                 return;
             }
 
-            resultsDiv.innerHTML = data.map(county => {
-                const percentage = ((county.mcmHomes / county.totalHomes) * 100).toFixed(1);
-                
-                return `
-                    <div class="neighborhood-card" onclick="focusOnMap('${county.name}')">
-                        <div class="card-header">
-                            <div class="card-title">${county.name}</div>
-                            <div class="card-subtitle">${county.state}</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="stat-row">
-                                <span class="stat-label">1950s Homes</span>
-                                <span class="stat-value">${percentage}%</span>
-                            </div>
-                            <div class="percentage-bar">
-                                <div class="percentage-fill" style="width: ${Math.min(percentage, 100)}%"></div>
-                            </div>
-                            
-                            <div class="stat-row" style="margin-top: 15px;">
-                                <span class="stat-label">Total MCM Homes</span>
-                                <span class="stat-value">${county.mcmHomes.toLocaleString()}</span>
-                            </div>
-                            
-                            <div class="stat-row">
-                                <span class="stat-label">Total Housing Units</span>
-                                <span class="stat-value">${county.totalHomes.toLocaleString()}</span>
-                            </div>
-
-                            <div class="premium-badge-card">
-                                <strong>💎 Coming Soon: Real Listings</strong>
-                                <p style="margin-top: 5px; font-size: 0.9em;">
-                                    MLS integration for active MCM listings in this area
-                                </p>
-                            </div>
-                        </div>
+            feedContent.innerHTML = '<div class="feed-grid">' +
+                articles.map(article => `
+                    <div class="feed-item" onclick="window.open('${article.link}', '_blank')">
+                        <h3>${article.title}</h3>
+                        <div class="date">🕒 ${article.pubDate}</div>
+                        <div class="description">${article.description}</div>
+                        <span class="source">${article.source}</span>
                     </div>
-                `;
-            }).join('');
+                `).join('') +
+            '</div>';
         }
 
-        function addMarkersToMap(data) {
-            clearMap();
+        function filterArticles() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
-            // Adjust map bounds
-            const bounds = [];
+            if (!searchTerm) {
+                displayArticles(allArticles);
+                return;
+            }
+
+            const filtered = allArticles.filter(article => 
+                article.title.toLowerCase().includes(searchTerm) ||
+                article.description.toLowerCase().includes(searchTerm)
+            );
+
+            displayArticles(filtered);
+        }
+
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || '';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown date';
             
-            data.forEach(county => {
-                const coords = COUNTY_COORDS[county.name];
-                if (coords) {
-                    const percentage = ((county.mcmHomes / county.totalHomes) * 100).toFixed(1);
-                    
-                    const marker = L.marker(coords).addTo(map);
-                    marker.bindPopup(`
-                        <strong>${county.name}</strong><br>
-                        ${county.state}<br>
-                        <strong>${percentage}%</strong> built 1950-1959<br>
-                        ${county.mcmHomes.toLocaleString()} MCM homes
-                    `);
-                    
-                    markers.push(marker);
-                    bounds.push(coords);
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                if (diffMins < 60) {
+                    return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+                } else if (diffHours < 24) {
+                    return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+                } else if (diffDays < 7) {
+                    return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+                } else {
+                    return date.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
                 }
-            });
-
-            // Fit map to show all markers
-            if (bounds.length > 0) {
-                map.fitBounds(bounds, { padding: [50, 50] });
+            } catch (e) {
+                return dateString;
             }
         }
 
-        function clearMap() {
-            markers.forEach(marker => marker.remove());
-            markers = [];
+        function showError(message) {
+            const feedContent = document.getElementById('feedContent');
+            feedContent.innerHTML = `
+                <div class="error">
+                    <div class="error-icon">⚠️</div>
+                    <h3>Oops! Something went wrong</h3>
+                    <p>${message}</p>
+                </div>
+            `;
         }
 
-        function focusOnMap(countyName) {
-            const coords = COUNTY_COORDS[countyName];
-            if (coords) {
-                map.setView(coords, 10);
-                
-                // Find and open popup for this marker
-                markers.forEach(marker => {
-                    if (marker.getLatLng().lat === coords[0] && marker.getLatLng().lng === coords[1]) {
-                        marker.openPopup();
-                    }
-                });
-                
-                // Scroll to map
-                document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+        function showEmptyState() {
+            const feedContent = document.getElementById('feedContent');
+            feedContent.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <h2>No articles found</h2>
+                    <p>Try entering a different RSS feed URL above</p>
+                </div>
+            `;
         }
 
-        // Initial load
-        window.onload = () => {
-            searchNeighborhoods();
-        };
+        // Show welcome message on load
+        document.getElementById('feedContent').innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🚀</div>
+                <h2>Ready to explore!</h2>
+                <p>Enter an RSS feed URL or try one of the preset feeds above</p>
+            </div>
+        `;
     </script>
 </body>
 </html>
