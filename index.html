@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSS Feed Reader</title>
+    <title>Read</title>
     <style>
         * {
             margin: 0;
@@ -12,257 +12,114 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
             min-height: 100vh;
-            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .container {
-            max-width: 1200px;
+        .app {
+            max-width: 680px;
             margin: 0 auto;
+            padding: 60px 24px;
         }
 
+        /* Header - Minimal and confident */
         header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.6s ease;
+            margin-bottom: 64px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
         }
 
         h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 44px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
         }
 
-        .subtitle {
-            font-size: 1.2em;
-            opacity: 0.9;
+        /* Articles - Clean reading experience */
+        .articles {
+            opacity: 0;
+            animation: fadeIn 0.6s ease 0.4s forwards;
         }
 
-        .feed-controls {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease;
+        article {
+            padding: 32px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: opacity 0.2s ease;
         }
 
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        article:hover {
+            opacity: 0.7;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
+        article:last-child {
+            border-bottom: none;
         }
 
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        .article-meta {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 12px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
         }
 
-        button {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
+        .article-title {
+            font-size: 24px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            line-height: 1.3;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            color: #ffffff;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        .article-excerpt {
+            font-size: 17px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: -0.01em;
         }
 
-        button:active {
-            transform: translateY(0);
-        }
-
-        .preset-feeds {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .preset-btn {
-            padding: 10px 20px;
-            background: #f5f5f5;
-            color: #333;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .preset-btn:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            transform: translateY(-2px);
-        }
-
-        .search-box {
-            margin-top: 20px;
-        }
-
+        /* Loading state */
         .loading {
             text-align: center;
-            padding: 40px;
-            color: white;
-            font-size: 1.2em;
-            animation: pulse 1.5s ease-in-out infinite;
+            padding: 80px 0;
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.4);
         }
 
-        .feed-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            animation: fadeIn 0.8s ease;
+        /* Empty state - Calm and inviting */
+        .empty {
+            text-align: center;
+            padding: 120px 24px;
         }
 
-        .feed-item {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            animation: slideUp 0.5s ease;
-            position: relative;
-            overflow: hidden;
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            opacity: 0.2;
         }
 
-        .feed-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .feed-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .feed-item h3 {
-            color: #333;
+        .empty-title {
+            font-size: 28px;
+            font-weight: 600;
             margin-bottom: 12px;
-            font-size: 1.3em;
+            letter-spacing: -0.02em;
+        }
+
+        .empty-subtitle {
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.4);
             line-height: 1.4;
         }
 
-        .feed-item .date {
-            color: #999;
-            font-size: 0.9em;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .feed-item .description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .feed-item .source {
-            display: inline-block;
-            padding: 6px 12px;
-            background: #f0f0f0;
-            border-radius: 20px;
-            font-size: 0.85em;
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        .error {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            color: #e74c3c;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            animation: shake 0.5s ease;
-        }
-
-        .error-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: white;
-        }
-
-        .empty-state-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.8;
-        }
-
-        .empty-state h2 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* Animations */
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(20px);
@@ -273,257 +130,150 @@
             }
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        @keyframes shake {
-            0%, 100% {
-                transform: translateX(0);
-            }
-            25% {
-                transform: translateX(-10px);
-            }
-            75% {
-                transform: translateX(10px);
-            }
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
+            .app {
+                padding: 40px 20px;
+            }
+
             h1 {
-                font-size: 2em;
+                font-size: 36px;
             }
 
-            .feed-grid {
-                grid-template-columns: 1fr;
+            .article-title {
+                font-size: 21px;
             }
 
-            .input-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
+            .article-excerpt {
+                font-size: 16px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="app">
         <header>
-            <h1>📰 RSS Feed Reader</h1>
-            <p class="subtitle">Stay updated with your favorite sources</p>
+            <h1>Read</h1>
         </header>
 
-        <div class="feed-controls">
-            <div class="input-group">
-                <input type="text" id="feedUrl" placeholder="Enter RSS feed URL (e.g., https://example.com/feed.xml)" />
-                <button onclick="loadFeed()">Load Feed</button>
-            </div>
-
-            <div class="preset-feeds">
-                <button class="preset-btn" onclick="loadPresetFeed('https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml')">📰 NY Times</button>
-                <button class="preset-btn" onclick="loadPresetFeed('https://feeds.bbci.co.uk/news/rss.xml')">🌍 BBC News</button>
-                <button class="preset-btn" onclick="loadPresetFeed('https://www.theguardian.com/world/rss')">📖 The Guardian</button>
-                <button class="preset-btn" onclick="loadPresetFeed('https://www.reddit.com/r/technology/.rss')">💻 Tech Reddit</button>
-                <button class="preset-btn" onclick="loadPresetFeed('https://hnrss.org/frontpage')">🔶 Hacker News</button>
-            </div>
-
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Search articles..." oninput="filterArticles()" />
-            </div>
-        </div>
-
-        <div id="feedContent"></div>
+        <div id="content"></div>
     </div>
 
     <script>
-        let allArticles = [];
+        const content = document.getElementById('content');
+        let articles = [];
 
-        async function loadFeed() {
-            const feedUrl = document.getElementById('feedUrl').value.trim();
-            if (!feedUrl) {
-                showError('Please enter a valid RSS feed URL');
-                return;
-            }
-            await fetchAndDisplayFeed(feedUrl);
-        }
+        // Global news feeds
+        const feeds = [
+            'https://feeds.bbci.co.uk/news/world/rss.xml',
+            'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+            'https://www.theguardian.com/world/rss',
+            'https://www.aljazeera.com/xml/rss/all.xml',
+            'https://www.reuters.com/rssFeed/worldNews'
+        ];
 
-        async function loadPresetFeed(url) {
-            document.getElementById('feedUrl').value = url;
-            await fetchAndDisplayFeed(url);
-        }
+        // Load all feeds automatically
+        content.innerHTML = '<div class="loading">Loading...</div>';
+        loadAllFeeds();
 
-        async function fetchAndDisplayFeed(feedUrl) {
-            const feedContent = document.getElementById('feedContent');
-            feedContent.innerHTML = '<div class="loading">⏳ Loading feed...</div>';
+        async function loadAllFeeds() {
+            const allArticles = [];
 
-            try {
-                // Using a CORS proxy to fetch RSS feeds
-                const proxyUrl = 'https://api.allorigins.win/get?url=';
-                const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
-                
-                if (!response.ok) {
-                    throw new Error('Failed to fetch feed');
-                }
-
-                const data = await response.json();
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(data.contents, 'text/xml');
-
-                // Check for parsing errors
-                const parseError = xml.querySelector('parsererror');
-                if (parseError) {
-                    throw new Error('Invalid RSS feed format');
-                }
-
-                // Parse RSS or Atom feed
-                const items = xml.querySelectorAll('item, entry');
-                
-                if (items.length === 0) {
-                    showEmptyState();
-                    return;
-                }
-
-                allArticles = Array.from(items).map(item => {
-                    // Handle both RSS and Atom formats
-                    const title = item.querySelector('title')?.textContent || 'Untitled';
-                    const link = item.querySelector('link')?.textContent || 
-                                item.querySelector('link')?.getAttribute('href') || '#';
-                    const description = item.querySelector('description')?.textContent || 
-                                      item.querySelector('summary')?.textContent || 
-                                      item.querySelector('content')?.textContent || 
-                                      'No description available';
-                    const pubDate = item.querySelector('pubDate')?.textContent || 
-                                   item.querySelector('published')?.textContent || 
-                                   item.querySelector('updated')?.textContent || '';
+            for (const url of feeds) {
+                try {
+                    const proxy = 'https://api.allorigins.win/get?url=';
+                    const response = await fetch(proxy + encodeURIComponent(url));
+                    const data = await response.json();
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(data.contents, 'text/xml');
+                    const items = xml.querySelectorAll('item, entry');
                     
-                    // Get source name from channel or feed title
-                    const channelTitle = xml.querySelector('channel > title, feed > title')?.textContent || 'Unknown Source';
+                    Array.from(items).forEach(item => {
+                        allArticles.push({
+                            title: item.querySelector('title')?.textContent || 'Untitled',
+                            link: item.querySelector('link')?.textContent || 
+                                  item.querySelector('link')?.getAttribute('href') || '#',
+                            description: cleanText(
+                                item.querySelector('description')?.textContent || 
+                                item.querySelector('summary')?.textContent || 
+                                item.querySelector('content')?.textContent || ''
+                            ),
+                            date: formatDate(
+                                item.querySelector('pubDate')?.textContent || 
+                                item.querySelector('published')?.textContent || 
+                                item.querySelector('updated')?.textContent
+                            ),
+                            timestamp: new Date(
+                                item.querySelector('pubDate')?.textContent || 
+                                item.querySelector('published')?.textContent || 
+                                item.querySelector('updated')?.textContent || Date.now()
+                            )
+                        });
+                    });
+                } catch (error) {
+                    console.error('Failed to load feed:', url);
+                }
+            }
 
-                    return {
-                        title,
-                        link,
-                        description: stripHtml(description).substring(0, 250),
-                        pubDate: formatDate(pubDate),
-                        source: channelTitle
-                    };
-                });
-
-                displayArticles(allArticles);
-
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Failed to load RSS feed. Please check the URL and try again. Some feeds may be blocked by CORS policies.');
+            // Sort by date, newest first
+            articles = allArticles.sort((a, b) => b.timestamp - a.timestamp);
+            
+            if (articles.length > 0) {
+                renderArticles();
+            } else {
+                showEmpty('⚠️', 'Could not load feeds', 'Please try again later');
             }
         }
 
-        function displayArticles(articles) {
-            const feedContent = document.getElementById('feedContent');
-            
-            if (articles.length === 0) {
-                feedContent.innerHTML = '<div class="error"><div class="error-icon">🔍</div><h3>No articles found matching your search</h3></div>';
-                return;
-            }
-
-            feedContent.innerHTML = '<div class="feed-grid">' +
-                articles.map(article => `
-                    <div class="feed-item" onclick="window.open('${article.link}', '_blank')">
-                        <h3>${article.title}</h3>
-                        <div class="date">🕒 ${article.pubDate}</div>
-                        <div class="description">${article.description}</div>
-                        <span class="source">${article.source}</span>
-                    </div>
+        function renderArticles() {
+            content.innerHTML = '<div class="articles">' +
+                articles.map(a => `
+                    <article onclick="window.open('${a.link}', '_blank')">
+                        <div class="article-meta">${a.date}</div>
+                        <div class="article-title">${a.title}</div>
+                        ${a.description ? `<div class="article-excerpt">${a.description}</div>` : ''}
+                    </article>
                 `).join('') +
             '</div>';
         }
 
-        function filterArticles() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            if (!searchTerm) {
-                displayArticles(allArticles);
-                return;
-            }
-
-            const filtered = allArticles.filter(article => 
-                article.title.toLowerCase().includes(searchTerm) ||
-                article.description.toLowerCase().includes(searchTerm)
-            );
-
-            displayArticles(filtered);
-        }
-
-        function stripHtml(html) {
+        function cleanText(html) {
             const tmp = document.createElement('div');
             tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || '';
+            const text = (tmp.textContent || '').trim();
+            return text.length > 200 ? text.substring(0, 200) + '...' : text;
         }
 
         function formatDate(dateString) {
-            if (!dateString) return 'Unknown date';
+            if (!dateString) return '';
             
             try {
                 const date = new Date(dateString);
                 const now = new Date();
-                const diffMs = now - date;
-                const diffMins = Math.floor(diffMs / 60000);
-                const diffHours = Math.floor(diffMs / 3600000);
-                const diffDays = Math.floor(diffMs / 86400000);
-
-                if (diffMins < 60) {
-                    return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
-                } else if (diffHours < 24) {
-                    return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
-                } else if (diffDays < 7) {
-                    return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
-                } else {
-                    return date.toLocaleDateString('en-US', { 
-                        month: 'short', 
-                        day: 'numeric', 
-                        year: 'numeric' 
-                    });
-                }
+                const diff = Math.floor((now - date) / 1000);
+                
+                if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+                if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+                if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+                
+                return date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
             } catch (e) {
-                return dateString;
+                return '';
             }
         }
 
-        function showError(message) {
-            const feedContent = document.getElementById('feedContent');
-            feedContent.innerHTML = `
-                <div class="error">
-                    <div class="error-icon">⚠️</div>
-                    <h3>Oops! Something went wrong</h3>
-                    <p>${message}</p>
+        function showEmpty(icon, title, subtitle) {
+            content.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">${icon}</div>
+                    <div class="empty-title">${title}</div>
+                    ${subtitle ? `<div class="empty-subtitle">${subtitle}</div>` : ''}
                 </div>
             `;
         }
-
-        function showEmptyState() {
-            const feedContent = document.getElementById('feedContent');
-            feedContent.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📭</div>
-                    <h2>No articles found</h2>
-                    <p>Try entering a different RSS feed URL above</p>
-                </div>
-            `;
-        }
-
-        // Show welcome message on load
-        document.getElementById('feedContent').innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">🚀</div>
-                <h2>Ready to explore!</h2>
-                <p>Enter an RSS feed URL or try one of the preset feeds above</p>
-            </div>
-        `;
     </script>
 </body>
 </html>
