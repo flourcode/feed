@@ -18,6 +18,12 @@
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-y: scroll;
+            scroll-behavior: smooth;
+        }
+
+        body:hover {
+            scroll-behavior: auto;
         }
 
         .app {
@@ -59,6 +65,7 @@
 
         article:last-child {
             border-bottom: none;
+            padding-bottom: 100vh; /* Extra space for smooth scrolling */
         }
 
         .article-meta {
@@ -176,6 +183,41 @@
         content.innerHTML = '<div class="loading">Loading...</div>';
         loadAllFeeds();
 
+        // Auto-scroll functionality
+        let scrollInterval;
+        let isHovering = false;
+
+        function startAutoScroll() {
+            scrollInterval = setInterval(() => {
+                if (!isHovering) {
+                    window.scrollBy({
+                        top: 1,
+                        behavior: 'smooth'
+                    });
+
+                    // Loop back to top when reaching bottom
+                    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 10) {
+                        setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 2000);
+                    }
+                }
+            }, 30); // Smooth, slow scroll
+        }
+
+        // Pause on hover
+        document.addEventListener('mouseenter', (e) => {
+            if (e.target.closest('article')) {
+                isHovering = true;
+            }
+        }, true);
+
+        document.addEventListener('mouseleave', (e) => {
+            if (e.target.closest('article')) {
+                isHovering = false;
+            }
+        }, true);
+
         async function loadAllFeeds() {
             const allArticles = [];
 
@@ -274,6 +316,44 @@
                 </div>
             `;
         }
+
+        // Auto-scroll functionality for kiosk mode
+        let scrollInterval;
+        let isHovering = false;
+
+        function startAutoScroll() {
+            scrollInterval = setInterval(() => {
+                if (!isHovering) {
+                    window.scrollBy({
+                        top: 1,
+                        behavior: 'auto'
+                    });
+
+                    // Loop back to top when reaching bottom
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 10) {
+                        setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 2000);
+                    }
+                }
+            }, 30); // Smooth 30ms intervals
+        }
+
+        // Pause on hover
+        document.body.addEventListener('mouseenter', () => {
+            isHovering = true;
+        });
+
+        document.body.addEventListener('mouseleave', () => {
+            isHovering = false;
+        });
+
+        // Start scrolling after articles load
+        setTimeout(() => {
+            if (articles.length > 0) {
+                startAutoScroll();
+            }
+        }, 3000); // Wait 3s before starting
     </script>
 </body>
 </html>
